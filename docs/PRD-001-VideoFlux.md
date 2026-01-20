@@ -42,10 +42,10 @@ The app wraps existing command-line tools (scrcpy, adb) in a clean, user-friendl
 - [x] Empty state shows clear message when no videos are found
 
 ### Destination Selection
-- [ ] User can select any folder on their Mac as transfer destination via native folder picker
-- [ ] Selected destination path is displayed in the UI
-- [ ] App detects the filesystem type of the destination volume (FAT32, exFAT, APFS, etc.)
-- [ ] Destination selection persists across app restarts
+- [x] User can select any folder on their Mac as transfer destination via native folder picker
+- [x] Selected destination path is displayed in the UI
+- [x] App detects the filesystem type of the destination volume (FAT32, exFAT, APFS, etc.)
+- [x] Destination selection persists across app restarts
 
 ### File Transfer
 - [ ] User can initiate transfer of selected videos to chosen destination
@@ -190,7 +190,7 @@ After each Phase Agent + QA cycle completes:
 ### Current Progress
 
 **Started**: 2026-01-20
-**Current Phase**: 4 / 6
+**Current Phase**: 5 / 6
 **Last Updated**: 2026-01-20
 
 ---
@@ -448,7 +448,7 @@ type DeviceStatus =
 
 **Status**: COMPLETE
 **Completed**: 2026-01-20
-**Commit**: (pending)
+**Commit**: ceebe58
 **QA Results**: typecheck OK, lint OK
 
 **Acceptance criteria covered**:
@@ -493,16 +493,16 @@ type DeviceStatus =
 
 **Goal**: User can select destination folder, app detects filesystem and warns about FAT32 limitations
 
-**Status**: PENDING
-**Completed**: —
-**Commit**: —
-**QA Results**: —
+**Status**: COMPLETE
+**Completed**: 2026-01-20
+**Commit**: (pending)
+**QA Results**: typecheck OK, lint OK
 
 **Acceptance criteria covered**:
-- [ ] User can select any folder on their Mac as transfer destination via native folder picker
-- [ ] Selected destination path is displayed in the UI
-- [ ] App detects the filesystem type of the destination volume
-- [ ] Destination selection persists across app restarts
+- [x] User can select any folder on their Mac as transfer destination via native folder picker
+- [x] Selected destination path is displayed in the UI
+- [x] App detects the filesystem type of the destination volume
+- [x] Destination selection persists across app restarts
 
 **Implementation notes**:
 - Create `src/main/filesystem.ts`:

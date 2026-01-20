@@ -19,3 +19,14 @@ export interface VideoFile {
   sizeHuman: string;
   modified: Date;
 }
+
+export interface FilesystemInfo {
+  type: 'FAT32' | 'exFAT' | 'APFS' | 'HFS+' | 'NTFS' | 'unknown';
+  volumeName: string;
+  maxFileSize: number | null;
+}
+
+export interface DestinationInfo {
+  path: string;
+  filesystem: FilesystemInfo;
+}

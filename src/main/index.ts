@@ -2,7 +2,9 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { getConnectedDevice, listVideos } from './adb.js';
 import { startMirror, stopMirror, getMirrorStatus, cleanupOnQuit } from './scrcpy.js';
-import type { DeviceStatus, MirrorStatus, VideoFile } from '../shared/types.js';
+import { selectFolder, getFilesystemType } from './filesystem.js';
+import { getDestination, setDestination } from './store.js';
+import type { DeviceStatus, MirrorStatus, VideoFile, DestinationInfo } from '../shared/types.js';
 
 let mainWindow: BrowserWindow | null = null;
 let pollingInterval: ReturnType<typeof setInterval> | null = null;
@@ -99,6 +101,26 @@ ipcMain.handle('mirror:status', (): MirrorStatus => {
 
 ipcMain.handle('videos:list', async (): Promise<VideoFile[]> => {
   return listVideos();
+});
+
+ipcMain.handle('destination:select', async (): Promise<DestinationInfo | null> => {
+  const folderPath = await selectFolder();
+  if (!folderPath) {
+    return null;
+  }
+
+  const filesystem = await getFilesystemType(folderPath);
+  const destinationInfo: DestinationInfo = {
+    path: folderPath,
+    filesystem,
+  };
+
+  await setDestination(destinationInfo);
+  return destinationInfo;
+});
+
+ipcMain.handle('destination:get', async (): Promise<DestinationInfo | null> => {
+  return getDestination();
 });
 
 app.whenReady().then(createWindow);

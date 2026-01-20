@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { DeviceStatus, MirrorStatus, VideoFile } from '../shared/types.js';
+import type { DeviceStatus, MirrorStatus, VideoFile, DestinationInfo } from '../shared/types.js';
 
 contextBridge.exposeInMainWorld('videoFlux', {
   getDeviceStatus: (): Promise<DeviceStatus> => ipcRenderer.invoke('device:status'),
@@ -23,4 +23,7 @@ contextBridge.exposeInMainWorld('videoFlux', {
   },
 
   listVideos: (): Promise<VideoFile[]> => ipcRenderer.invoke('videos:list'),
+
+  selectDestination: (): Promise<DestinationInfo | null> => ipcRenderer.invoke('destination:select'),
+  getDestination: (): Promise<DestinationInfo | null> => ipcRenderer.invoke('destination:get'),
 });

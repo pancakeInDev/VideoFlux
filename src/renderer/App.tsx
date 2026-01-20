@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback } from 'react';
 import DeviceStatus from './components/DeviceStatus';
 import MirrorControl from './components/MirrorControl';
 import VideoList from './components/VideoList';
-import type { DeviceStatus as DeviceStatusType } from '../shared/types';
+import DestinationPicker from './components/DestinationPicker';
+import type { DeviceStatus as DeviceStatusType, DestinationInfo } from '../shared/types';
 
 const containerStyle: React.CSSProperties = {
   display: 'flex',
@@ -25,6 +26,7 @@ const headingStyle: React.CSSProperties = {
 export default function App() {
   const [deviceStatus, setDeviceStatus] = useState<DeviceStatusType | null>(null);
   const [selectedVideoPaths, setSelectedVideoPaths] = useState<string[]>([]);
+  const [destinationInfo, setDestinationInfo] = useState<DestinationInfo | null>(null);
 
   useEffect(() => {
     window.videoFlux.getDeviceStatus().then(setDeviceStatus);
@@ -37,7 +39,12 @@ export default function App() {
     setSelectedVideoPaths(paths);
   }, []);
 
+  const handleDestinationChange = useCallback((info: DestinationInfo | null) => {
+    setDestinationInfo(info);
+  }, []);
+
   console.log('Selected videos:', selectedVideoPaths.length);
+  console.log('Destination:', destinationInfo?.path);
 
   return (
     <div style={containerStyle}>
@@ -45,6 +52,7 @@ export default function App() {
       <DeviceStatus />
       <MirrorControl deviceStatus={deviceStatus} />
       <VideoList deviceStatus={deviceStatus} onSelectionChange={handleSelectionChange} />
+      <DestinationPicker destinationInfo={destinationInfo} onDestinationChange={handleDestinationChange} />
     </div>
   );
 }
