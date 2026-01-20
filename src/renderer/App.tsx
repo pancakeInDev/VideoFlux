@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react';
 import DeviceStatus from './components/DeviceStatus';
+import MirrorControl from './components/MirrorControl';
+import type { DeviceStatus as DeviceStatusType } from '../shared/types';
 
 const containerStyle: React.CSSProperties = {
   display: 'flex',
@@ -19,10 +22,20 @@ const headingStyle: React.CSSProperties = {
 };
 
 export default function App() {
+  const [deviceStatus, setDeviceStatus] = useState<DeviceStatusType | null>(null);
+
+  useEffect(() => {
+    window.videoFlux.getDeviceStatus().then(setDeviceStatus);
+
+    const unsubscribe = window.videoFlux.onDeviceStatusChange(setDeviceStatus);
+    return unsubscribe;
+  }, []);
+
   return (
     <div style={containerStyle}>
       <h1 style={headingStyle}>VideoFlux</h1>
       <DeviceStatus />
+      <MirrorControl deviceStatus={deviceStatus} />
     </div>
   );
 }

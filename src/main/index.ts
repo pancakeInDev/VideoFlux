@@ -1,7 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
 import { getConnectedDevice } from './adb.js';
-import type { DeviceStatus } from '../shared/types.js';
+import { startMirror, stopMirror, getMirrorStatus, cleanupOnQuit } from './scrcpy.js';
+import type { DeviceStatus, MirrorStatus } from '../shared/types.js';
 
 let mainWindow: BrowserWindow | null = null;
 let pollingInterval: ReturnType<typeof setInterval> | null = null;
@@ -42,6 +43,10 @@ function stopDevicePolling(): void {
   }
 }
 
+function sendMirrorStatusChange(status: MirrorStatus): void {
+  mainWindow?.webContents.send('mirror:status-changed', status);
+}
+
 function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1200,
@@ -75,6 +80,23 @@ ipcMain.handle('device:status', async (): Promise<DeviceStatus> => {
   return status;
 });
 
+ipcMain.handle('mirror:start', async (): Promise<MirrorStatus> => {
+  const status = await startMirror(() => {
+    sendMirrorStatusChange({ status: 'inactive' });
+  });
+  sendMirrorStatusChange(status);
+  return status;
+});
+
+ipcMain.handle('mirror:stop', (): void => {
+  stopMirror();
+  sendMirrorStatusChange({ status: 'inactive' });
+});
+
+ipcMain.handle('mirror:status', (): MirrorStatus => {
+  return getMirrorStatus();
+});
+
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {
@@ -92,4 +114,5 @@ app.on('activate', () => {
 
 app.on('before-quit', () => {
   stopDevicePolling();
+  cleanupOnQuit();
 });

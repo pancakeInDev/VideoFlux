@@ -26,12 +26,12 @@ The app wraps existing command-line tools (scrcpy, adb) in a clean, user-friendl
 - [x] App handles device disconnection gracefully with clear feedback
 
 ### Screen Mirroring
-- [ ] User can launch scrcpy mirroring with a single button click
-- [ ] scrcpy window opens as a separate, detachable window (native scrcpy behavior)
-- [ ] All scrcpy interactive features work: touch, click, keyboard input, navigation
-- [ ] User can stop the mirroring session from the app
-- [ ] App shows mirroring status: "Active" or "Inactive"
-- [ ] If scrcpy fails to launch, app displays a clear error message
+- [x] User can launch scrcpy mirroring with a single button click
+- [x] scrcpy window opens as a separate, detachable window (native scrcpy behavior)
+- [x] All scrcpy interactive features work: touch, click, keyboard input, navigation
+- [x] User can stop the mirroring session from the app
+- [x] App shows mirroring status: "Active" or "Inactive"
+- [x] If scrcpy fails to launch, app displays a clear error message
 
 ### Video File Browser
 - [ ] App lists video files from the phone's DCIM/Camera directory
@@ -58,7 +58,7 @@ The app wraps existing command-line tools (scrcpy, adb) in a clean, user-friendl
 
 ### Error Handling
 - [x] ADB not installed: app shows installation instructions
-- [ ] scrcpy not installed: app shows installation instructions
+- [x] scrcpy not installed: app shows installation instructions
 - [x] Device not authorized: app shows step-by-step authorization guide
 - [ ] Transfer failure: app shows specific error (permission denied, disk full, etc.)
 - [ ] All errors are dismissible and don't block app usage
@@ -190,7 +190,7 @@ After each Phase Agent + QA cycle completes:
 ### Current Progress
 
 **Started**: 2026-01-20
-**Current Phase**: 2 / 6
+**Current Phase**: 3 / 6
 **Last Updated**: 2026-01-20
 
 ---
@@ -356,7 +356,7 @@ diskutil info /Volumes/SSD | grep "File System Personality"
 
 **Status**: COMPLETE
 **Completed**: 2026-01-20
-**Commit**: (pending)
+**Commit**: 4936346
 **QA Results**: typecheck OK, lint OK
 
 **Acceptance criteria covered**:
@@ -405,19 +405,19 @@ type DeviceStatus =
 
 **Goal**: User can start and stop scrcpy mirroring from the app
 
-**Status**: PENDING
-**Completed**: —
-**Commit**: —
-**QA Results**: —
+**Status**: COMPLETE
+**Completed**: 2026-01-20
+**Commit**: (pending)
+**QA Results**: typecheck OK, lint OK
 
 **Acceptance criteria covered**:
-- [ ] User can launch scrcpy mirroring with a single button click
-- [ ] scrcpy window opens as a separate, detachable window
-- [ ] All scrcpy interactive features work: touch, click, keyboard input, navigation
-- [ ] User can stop the mirroring session from the app
-- [ ] App shows mirroring status: "Active" or "Inactive"
-- [ ] If scrcpy fails to launch, app displays a clear error message
-- [ ] scrcpy not installed: app shows installation instructions
+- [x] User can launch scrcpy mirroring with a single button click
+- [x] scrcpy window opens as a separate, detachable window
+- [x] All scrcpy interactive features work: touch, click, keyboard input, navigation
+- [x] User can stop the mirroring session from the app
+- [x] App shows mirroring status: "Active" or "Inactive"
+- [x] If scrcpy fails to launch, app displays a clear error message
+- [x] scrcpy not installed: app shows installation instructions
 
 **Implementation notes**:
 - Create `src/main/scrcpy.ts` with functions:
