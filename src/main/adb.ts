@@ -164,6 +164,77 @@ export interface TransferResult {
   error?: string;
 }
 
+export interface DeleteResult {
+  success: boolean;
+  error?: string;
+}
+
+export async function deleteFile(filePath: string): Promise<DeleteResult> {
+  console.log('[deleteFile] Starting delete for:', filePath);
+
+  const adbInstalled = await checkAdbInstalled();
+  if (!adbInstalled) {
+    console.log('[deleteFile] ADB not installed');
+    return { success: false, error: 'ADB not installed' };
+  }
+
+  const command = `adb shell rm "${filePath}"`;
+  console.log('[deleteFile] Running command:', command);
+
+  try {
+    const { stdout, stderr } = await execAsync(command);
+    console.log('[deleteFile] stdout:', stdout);
+    console.log('[deleteFile] stderr:', stderr);
+
+    if (stderr && stderr.trim()) {
+      console.log('[deleteFile] stderr not empty, treating as error');
+      return { success: false, error: `Delete failed: ${stderr.trim()}` };
+    }
+
+    console.log('[deleteFile] Success!');
+    return { success: true };
+  } catch (error) {
+    console.log('[deleteFile] Exception caught:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    const fullError = JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
+    console.log('[deleteFile] Full error object:', fullError);
+
+    if (message.includes('No such file')) {
+      return { success: false, error: 'File not found on device' };
+    }
+    if (message.includes('Permission denied')) {
+      return { success: false, error: 'Permission denied' };
+    }
+    if (message.includes('Read-only file system')) {
+      return { success: false, error: 'Read-only file system' };
+    }
+    return { success: false, error: `Delete failed: ${message}` };
+  }
+}
+
+export async function deleteFiles(filePaths: string[]): Promise<{ deleted: string[]; failed: Array<{ path: string; error: string }> }> {
+  console.log('[deleteFiles] Called with paths:', filePaths);
+  console.log('[deleteFiles] Number of files:', filePaths.length);
+
+  const deleted: string[] = [];
+  const failed: Array<{ path: string; error: string }> = [];
+
+  for (const filePath of filePaths) {
+    console.log('[deleteFiles] Processing:', filePath);
+    const result = await deleteFile(filePath);
+    console.log('[deleteFiles] Result for', filePath, ':', result);
+
+    if (result.success) {
+      deleted.push(filePath);
+    } else {
+      failed.push({ path: filePath, error: result.error || 'Unknown error' });
+    }
+  }
+
+  console.log('[deleteFiles] Final result - deleted:', deleted.length, 'failed:', failed.length);
+  return { deleted, failed };
+}
+
 export async function transferFile(
   sourcePath: string,
   destDir: string,

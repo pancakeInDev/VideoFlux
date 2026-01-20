@@ -54,6 +54,11 @@ const secondaryButtonStyle = (disabled: boolean): React.CSSProperties => ({
   backgroundColor: disabled ? '#4a4a6a' : '#374151',
 });
 
+const dangerButtonStyle = (disabled: boolean): React.CSSProperties => ({
+  ...buttonStyle(disabled),
+  backgroundColor: disabled ? '#4a4a6a' : '#dc2626',
+});
+
 const tableContainerStyle: React.CSSProperties = {
   maxHeight: '300px',
   overflowY: 'auto',
@@ -138,6 +143,8 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
   const [videos, setVideos] = useState<VideoFile[]>([]);
   const [selectedPaths, setSelectedPaths] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteResult, setDeleteResult] = useState<{ deleted: number; failed: number } | null>(null);
 
   const isDeviceConnected = deviceStatus?.status === 'connected';
 
@@ -191,6 +198,28 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
     setSelectedPaths(new Set());
   };
 
+  const handleDeleteSelected = async () => {
+    if (selectedPaths.size === 0) return;
+
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete ${selectedPaths.size} video${selectedPaths.size !== 1 ? 's' : ''} from your phone? This cannot be undone.`
+    );
+
+    if (!confirmDelete) return;
+
+    setIsDeleting(true);
+    setDeleteResult(null);
+
+    try {
+      const result = await window.videoFlux.deleteVideos(Array.from(selectedPaths));
+      setDeleteResult({ deleted: result.deleted.length, failed: result.failed.length });
+      setSelectedPaths(new Set());
+      await fetchVideos();
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   if (!isDeviceConnected) {
     return (
       <div style={containerStyle}>
@@ -228,11 +257,26 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
           >
             {isLoading ? 'Loading...' : 'Refresh'}
           </button>
+          <button
+            style={dangerButtonStyle(isLoading || isDeleting || selectedPaths.size === 0)}
+            onClick={handleDeleteSelected}
+            disabled={isLoading || isDeleting || selectedPaths.size === 0}
+          >
+            {isDeleting ? 'Deleting...' : 'Delete'}
+          </button>
         </div>
       </div>
 
       {selectedPaths.size > 0 && (
         <p style={countStyle}>{selectedPaths.size} video{selectedPaths.size !== 1 ? 's' : ''} selected</p>
+      )}
+
+      {deleteResult && (
+        <p style={{ ...countStyle, color: deleteResult.failed > 0 ? '#f87171' : '#4ade80' }}>
+          {deleteResult.deleted > 0 && `Deleted ${deleteResult.deleted} video${deleteResult.deleted !== 1 ? 's' : ''}`}
+          {deleteResult.deleted > 0 && deleteResult.failed > 0 && ', '}
+          {deleteResult.failed > 0 && `${deleteResult.failed} failed`}
+        </p>
       )}
 
       <div style={tableContainerStyle}>
