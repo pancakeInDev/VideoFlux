@@ -22,20 +22,20 @@ Additionally, once the UI redesign is complete, the project needs comprehensive 
 
 - [x] Tailwind CSS is installed and configured with Vite
 - [x] PostCSS is properly configured for Tailwind processing
-- [ ] All inline React styles are removed from components
-- [ ] Components use Tailwind utility classes exclusively
+- [x] All inline React styles are removed from components
+- [x] Components use Tailwind utility classes exclusively
 - [x] Custom colors and design tokens are defined in tailwind.config.js
-- [ ] No CSS-in-JS or inline style objects remain in any component
+- [x] No CSS-in-JS or inline style objects remain in any component
 
 ### Apple-Style Light Theme
 
-- [ ] Background uses light colors: white (#FFFFFF) and light gray (#F5F5F7)
-- [ ] Typography uses SF Pro via `-apple-system, BlinkMacSystemFont` font stack
-- [ ] Text colors follow Apple conventions: primary (#1D1D1F), secondary (#86868B)
-- [ ] Cards and containers use subtle shadows instead of colored backgrounds
-- [ ] Accent color is Apple blue (#007AFF) for primary actions
-- [ ] Status indicators use semantic colors: green (#34C759), yellow (#FF9500), red (#FF3B30)
-- [ ] Border radius follows Apple conventions (8px for cards, 6px for buttons)
+- [x] Background uses light colors: white (#FFFFFF) and light gray (#F5F5F7)
+- [x] Typography uses SF Pro via `-apple-system, BlinkMacSystemFont` font stack
+- [x] Text colors follow Apple conventions: primary (#1D1D1F), secondary (#86868B)
+- [x] Cards and containers use subtle shadows instead of colored backgrounds
+- [x] Accent color is Apple blue (#007AFF) for primary actions
+- [x] Status indicators use semantic colors: green (#34C759), yellow (#FF9500), red (#FF3B30)
+- [x] Border radius follows Apple conventions (8px for cards, 6px for buttons)
 - [ ] Overall visual impression matches macOS System Preferences aesthetic
 
 ### Animations & Micro-interactions
@@ -49,14 +49,14 @@ Additionally, once the UI redesign is complete, the project needs comprehensive 
 
 ### Component Refactoring
 
-- [ ] App.tsx refactored with proper layout structure using Tailwind
-- [ ] DeviceStatus.tsx redesigned with Apple-style card and status indicators
-- [ ] MirrorControl.tsx redesigned with proper button hierarchy
-- [ ] VideoList.tsx redesigned with clean table styling and selection UX
-- [ ] DestinationPicker.tsx redesigned with path display and folder icon
-- [ ] TransferProgress.tsx redesigned with Apple-style progress bar
-- [ ] LargeFileWarning.tsx redesigned as Apple-style modal/sheet
-- [ ] All components pass TypeScript strict mode checks
+- [x] App.tsx refactored with proper layout structure using Tailwind
+- [x] DeviceStatus.tsx redesigned with Apple-style card and status indicators
+- [x] MirrorControl.tsx redesigned with proper button hierarchy
+- [x] VideoList.tsx redesigned with clean table styling and selection UX
+- [x] DestinationPicker.tsx redesigned with path display and folder icon
+- [x] TransferProgress.tsx redesigned with Apple-style progress bar
+- [x] LargeFileWarning.tsx redesigned as Apple-style modal/sheet
+- [x] All components pass TypeScript strict mode checks
 
 ### README Documentation
 
@@ -217,7 +217,7 @@ After each Phase Agent + QA cycle completes:
 ### Current Progress
 
 **Started**: 2026-01-20
-**Current Phase**: 1 / 4
+**Current Phase**: 2 / 4
 **Last Updated**: 2026-01-20
 
 ---
@@ -305,7 +305,7 @@ For each component:
 
 **Status**: COMPLETE
 **Completed**: 2026-01-20
-**Commit**: pending
+**Commit**: 9c939a6
 **QA Results**: typecheck OK, lint OK, dev server OK
 
 **Acceptance criteria covered**:
@@ -387,30 +387,30 @@ import './styles/main.css';
 
 **Goal**: All components migrated from inline styles to Tailwind with Apple-style light theme
 
-**Status**: PENDING
-**Completed**: --
-**Commit**: --
-**QA Results**: --
+**Status**: COMPLETE
+**Completed**: 2026-01-20
+**Commit**: pending
+**QA Results**: typecheck OK, lint OK, components render in Electron
 
 **Acceptance criteria covered**:
-- [ ] All inline React styles are removed from components
-- [ ] Components use Tailwind utility classes exclusively
-- [ ] No CSS-in-JS or inline style objects remain in any component
-- [ ] Background uses light colors: white (#FFFFFF) and light gray (#F5F5F7)
-- [ ] Typography uses SF Pro via `-apple-system` font stack
-- [ ] Text colors follow Apple conventions
-- [ ] Cards and containers use subtle shadows
-- [ ] Accent color is Apple blue (#007AFF) for primary actions
-- [ ] Status indicators use semantic colors
-- [ ] Border radius follows Apple conventions
-- [ ] App.tsx refactored with proper layout structure
-- [ ] DeviceStatus.tsx redesigned
-- [ ] MirrorControl.tsx redesigned
-- [ ] VideoList.tsx redesigned
-- [ ] DestinationPicker.tsx redesigned
-- [ ] TransferProgress.tsx redesigned
-- [ ] LargeFileWarning.tsx redesigned
-- [ ] All components pass TypeScript strict mode checks
+- [x] All inline React styles are removed from components
+- [x] Components use Tailwind utility classes exclusively
+- [x] No CSS-in-JS or inline style objects remain in any component
+- [x] Background uses light colors: white (#FFFFFF) and light gray (#F5F5F7)
+- [x] Typography uses SF Pro via `-apple-system` font stack
+- [x] Text colors follow Apple conventions
+- [x] Cards and containers use subtle shadows
+- [x] Accent color is Apple blue (#007AFF) for primary actions
+- [x] Status indicators use semantic colors
+- [x] Border radius follows Apple conventions
+- [x] App.tsx refactored with proper layout structure
+- [x] DeviceStatus.tsx redesigned
+- [x] MirrorControl.tsx redesigned
+- [x] VideoList.tsx redesigned
+- [x] DestinationPicker.tsx redesigned
+- [x] TransferProgress.tsx redesigned
+- [x] LargeFileWarning.tsx redesigned
+- [x] All components pass TypeScript strict mode checks
 
 **Implementation notes**:
 

@@ -6,129 +6,6 @@ interface VideoListProps {
   onSelectionChange: (selectedPaths: string[]) => void;
 }
 
-const containerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '12px',
-  padding: '16px 24px',
-  backgroundColor: '#252540',
-  borderRadius: '12px',
-  marginTop: '16px',
-  maxWidth: '700px',
-  width: '100%',
-};
-
-const headerStyle: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  gap: '12px',
-};
-
-const titleStyle: React.CSSProperties = {
-  fontSize: '1rem',
-  fontWeight: 600,
-  margin: 0,
-  color: '#eaeaea',
-};
-
-const buttonGroupStyle: React.CSSProperties = {
-  display: 'flex',
-  gap: '8px',
-};
-
-const buttonStyle = (disabled: boolean): React.CSSProperties => ({
-  padding: '6px 12px',
-  fontSize: '0.8rem',
-  fontWeight: 600,
-  border: 'none',
-  borderRadius: '6px',
-  cursor: disabled ? 'not-allowed' : 'pointer',
-  backgroundColor: disabled ? '#4a4a6a' : '#6366f1',
-  color: disabled ? '#9ca3af' : '#ffffff',
-  transition: 'background-color 0.2s',
-});
-
-const secondaryButtonStyle = (disabled: boolean): React.CSSProperties => ({
-  ...buttonStyle(disabled),
-  backgroundColor: disabled ? '#4a4a6a' : '#374151',
-});
-
-const dangerButtonStyle = (disabled: boolean): React.CSSProperties => ({
-  ...buttonStyle(disabled),
-  backgroundColor: disabled ? '#4a4a6a' : '#dc2626',
-});
-
-const tableContainerStyle: React.CSSProperties = {
-  maxHeight: '300px',
-  overflowY: 'auto',
-  borderRadius: '8px',
-  backgroundColor: '#1a1a2e',
-};
-
-const tableStyle: React.CSSProperties = {
-  width: '100%',
-  borderCollapse: 'collapse',
-  fontSize: '0.875rem',
-};
-
-const thStyle: React.CSSProperties = {
-  padding: '10px 12px',
-  textAlign: 'left',
-  borderBottom: '1px solid #374151',
-  color: '#9ca3af',
-  fontWeight: 500,
-  position: 'sticky',
-  top: 0,
-  backgroundColor: '#1a1a2e',
-};
-
-const tdStyle: React.CSSProperties = {
-  padding: '10px 12px',
-  borderBottom: '1px solid #374151',
-  color: '#eaeaea',
-};
-
-const checkboxCellStyle: React.CSSProperties = {
-  ...tdStyle,
-  width: '40px',
-  textAlign: 'center',
-};
-
-const checkboxStyle: React.CSSProperties = {
-  width: '16px',
-  height: '16px',
-  cursor: 'pointer',
-};
-
-const emptyStateStyle: React.CSSProperties = {
-  textAlign: 'center',
-  padding: '32px 16px',
-  color: '#9ca3af',
-  fontSize: '0.875rem',
-};
-
-const loadingStyle: React.CSSProperties = {
-  textAlign: 'center',
-  padding: '32px 16px',
-  color: '#9ca3af',
-  fontSize: '0.875rem',
-};
-
-const disabledMessageStyle: React.CSSProperties = {
-  fontSize: '0.875rem',
-  color: '#9ca3af',
-  margin: 0,
-  textAlign: 'center',
-  padding: '16px',
-};
-
-const countStyle: React.CSSProperties = {
-  fontSize: '0.8rem',
-  color: '#9ca3af',
-  margin: 0,
-};
-
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
@@ -222,43 +99,43 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
 
   if (!isDeviceConnected) {
     return (
-      <div style={containerStyle}>
-        <div style={headerStyle}>
-          <p style={titleStyle}>Videos</p>
+      <div className="bg-white rounded-xl shadow-apple p-6 w-full max-w-[700px] flex flex-col gap-3">
+        <div className="flex justify-between items-center gap-3">
+          <p className="text-base font-semibold text-apple-text-primary m-0">Videos</p>
         </div>
-        <p style={disabledMessageStyle}>Connect a device to browse videos</p>
+        <p className="text-sm text-apple-text-secondary m-0 text-center py-4">Connect a device to browse videos</p>
       </div>
     );
   }
 
   return (
-    <div style={containerStyle}>
-      <div style={headerStyle}>
-        <p style={titleStyle}>Videos</p>
-        <div style={buttonGroupStyle}>
+    <div className="bg-white rounded-xl shadow-apple p-6 w-full max-w-[700px] flex flex-col gap-3">
+      <div className="flex justify-between items-center gap-3">
+        <p className="text-base font-semibold text-apple-text-primary m-0">Videos</p>
+        <div className="flex gap-2">
           <button
-            style={secondaryButtonStyle(isLoading || videos.length === 0)}
+            className="bg-apple-bg-secondary text-apple-text-primary px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-gray-200 transition-colors duration-150 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
             onClick={handleSelectAll}
             disabled={isLoading || videos.length === 0}
           >
             Select All
           </button>
           <button
-            style={secondaryButtonStyle(isLoading || selectedPaths.size === 0)}
+            className="bg-apple-bg-secondary text-apple-text-primary px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-gray-200 transition-colors duration-150 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
             onClick={handleDeselectAll}
             disabled={isLoading || selectedPaths.size === 0}
           >
             Deselect All
           </button>
           <button
-            style={buttonStyle(isLoading)}
+            className="bg-apple-blue text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:opacity-90 transition-opacity duration-150 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
             onClick={fetchVideos}
             disabled={isLoading}
           >
             {isLoading ? 'Loading...' : 'Refresh'}
           </button>
           <button
-            style={dangerButtonStyle(isLoading || isDeleting || selectedPaths.size === 0)}
+            className="bg-apple-red text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:opacity-90 transition-opacity duration-150 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
             onClick={handleDeleteSelected}
             disabled={isLoading || isDeleting || selectedPaths.size === 0}
           >
@@ -268,46 +145,46 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
       </div>
 
       {selectedPaths.size > 0 && (
-        <p style={countStyle}>{selectedPaths.size} video{selectedPaths.size !== 1 ? 's' : ''} selected</p>
+        <p className="text-xs text-apple-text-secondary m-0">{selectedPaths.size} video{selectedPaths.size !== 1 ? 's' : ''} selected</p>
       )}
 
       {deleteResult && (
-        <p style={{ ...countStyle, color: deleteResult.failed > 0 ? '#f87171' : '#4ade80' }}>
+        <p className={`text-xs m-0 ${deleteResult.failed > 0 ? 'text-apple-red' : 'text-apple-green'}`}>
           {deleteResult.deleted > 0 && `Deleted ${deleteResult.deleted} video${deleteResult.deleted !== 1 ? 's' : ''}`}
           {deleteResult.deleted > 0 && deleteResult.failed > 0 && ', '}
           {deleteResult.failed > 0 && `${deleteResult.failed} failed`}
         </p>
       )}
 
-      <div style={tableContainerStyle}>
+      <div className="max-h-[300px] overflow-y-auto rounded-lg bg-apple-bg-secondary">
         {isLoading ? (
-          <p style={loadingStyle}>Loading videos...</p>
+          <p className="text-center py-8 text-sm text-apple-text-secondary">Loading videos...</p>
         ) : videos.length === 0 ? (
-          <p style={emptyStateStyle}>No videos found in DCIM/Camera</p>
+          <p className="text-center py-8 text-sm text-apple-text-secondary">No videos found in DCIM/Camera</p>
         ) : (
-          <table style={tableStyle}>
+          <table className="w-full border-collapse text-sm">
             <thead>
               <tr>
-                <th style={{ ...thStyle, width: '40px', textAlign: 'center' }}></th>
-                <th style={thStyle}>Filename</th>
-                <th style={{ ...thStyle, width: '80px' }}>Size</th>
-                <th style={{ ...thStyle, width: '150px' }}>Modified</th>
+                <th className="py-2.5 px-3 text-left border-b border-apple-border text-apple-text-secondary font-medium sticky top-0 bg-apple-bg-secondary w-10 text-center"></th>
+                <th className="py-2.5 px-3 text-left border-b border-apple-border text-apple-text-secondary font-medium sticky top-0 bg-apple-bg-secondary">Filename</th>
+                <th className="py-2.5 px-3 text-left border-b border-apple-border text-apple-text-secondary font-medium sticky top-0 bg-apple-bg-secondary w-20">Size</th>
+                <th className="py-2.5 px-3 text-left border-b border-apple-border text-apple-text-secondary font-medium sticky top-0 bg-apple-bg-secondary w-[150px]">Modified</th>
               </tr>
             </thead>
             <tbody>
               {videos.map(video => (
-                <tr key={video.path}>
-                  <td style={checkboxCellStyle}>
+                <tr key={video.path} className="hover:bg-gray-100">
+                  <td className="py-2.5 px-3 border-b border-apple-border text-apple-text-primary w-10 text-center">
                     <input
                       type="checkbox"
-                      style={checkboxStyle}
+                      className="w-4 h-4 cursor-pointer accent-apple-blue"
                       checked={selectedPaths.has(video.path)}
                       onChange={() => handleToggleSelection(video.path)}
                     />
                   </td>
-                  <td style={tdStyle}>{video.filename}</td>
-                  <td style={tdStyle}>{video.sizeHuman}</td>
-                  <td style={tdStyle}>{formatDate(video.modified)}</td>
+                  <td className="py-2.5 px-3 border-b border-apple-border text-apple-text-primary">{video.filename}</td>
+                  <td className="py-2.5 px-3 border-b border-apple-border text-apple-text-primary">{video.sizeHuman}</td>
+                  <td className="py-2.5 px-3 border-b border-apple-border text-apple-text-primary">{formatDate(video.modified)}</td>
                 </tr>
               ))}
             </tbody>

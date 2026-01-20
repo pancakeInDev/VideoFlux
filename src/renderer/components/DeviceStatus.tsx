@@ -1,52 +1,15 @@
 import { useEffect, useState } from 'react';
 import type { DeviceStatus as DeviceStatusType } from '../../shared/types';
 
-const containerStyle: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '12px',
-  padding: '16px 24px',
-  backgroundColor: '#252540',
-  borderRadius: '12px',
-  marginTop: '24px',
-  maxWidth: '500px',
-};
-
-const indicatorStyle = (color: string): React.CSSProperties => ({
-  width: '12px',
-  height: '12px',
-  borderRadius: '50%',
-  backgroundColor: color,
-  flexShrink: 0,
-});
-
-const textContainerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4px',
-};
-
-const titleStyle: React.CSSProperties = {
-  fontSize: '1rem',
-  fontWeight: 600,
-  margin: 0,
-  color: '#eaeaea',
-};
-
-const detailsStyle: React.CSSProperties = {
-  fontSize: '0.875rem',
-  color: '#9ca3af',
-  margin: 0,
-  whiteSpace: 'pre-line',
-};
-
-const codeStyle: React.CSSProperties = {
-  fontFamily: 'monospace',
-  backgroundColor: '#1a1a2e',
-  padding: '2px 6px',
-  borderRadius: '4px',
-  fontSize: '0.8rem',
-};
+function StatusIndicator({ color }: { color: 'gray' | 'green' | 'yellow' | 'red' }) {
+  const colorClasses = {
+    gray: 'bg-gray-400',
+    green: 'bg-apple-green',
+    yellow: 'bg-apple-yellow',
+    red: 'bg-apple-red',
+  };
+  return <div className={`w-3 h-3 rounded-full shrink-0 ${colorClasses[color]}`} />;
+}
 
 export default function DeviceStatus() {
   const [status, setStatus] = useState<DeviceStatusType | null>(null);
@@ -60,10 +23,10 @@ export default function DeviceStatus() {
 
   if (!status) {
     return (
-      <div style={containerStyle}>
-        <div style={indicatorStyle('#6b7280')} />
-        <div style={textContainerStyle}>
-          <p style={titleStyle}>Checking device status...</p>
+      <div className="bg-white rounded-xl shadow-apple p-6 w-full max-w-[500px] flex items-center gap-3">
+        <StatusIndicator color="gray" />
+        <div className="flex flex-col gap-1">
+          <p className="text-base font-semibold text-apple-text-primary m-0">Checking device status...</p>
         </div>
       </div>
     );
@@ -72,22 +35,22 @@ export default function DeviceStatus() {
   switch (status.status) {
     case 'connected':
       return (
-        <div style={containerStyle}>
-          <div style={indicatorStyle('#22c55e')} />
-          <div style={textContainerStyle}>
-            <p style={titleStyle}>{status.deviceName}</p>
-            <p style={detailsStyle}>Device ID: {status.deviceId}</p>
+        <div className="bg-white rounded-xl shadow-apple p-6 w-full max-w-[500px] flex items-center gap-3">
+          <StatusIndicator color="green" />
+          <div className="flex flex-col gap-1">
+            <p className="text-base font-semibold text-apple-text-primary m-0">{status.deviceName}</p>
+            <p className="text-sm text-apple-text-secondary m-0">Device ID: {status.deviceId}</p>
           </div>
         </div>
       );
 
     case 'unauthorized':
       return (
-        <div style={containerStyle}>
-          <div style={indicatorStyle('#eab308')} />
-          <div style={textContainerStyle}>
-            <p style={titleStyle}>Unauthorized Device</p>
-            <p style={detailsStyle}>
+        <div className="bg-white rounded-xl shadow-apple p-6 w-full max-w-[500px] flex items-center gap-3">
+          <StatusIndicator color="yellow" />
+          <div className="flex flex-col gap-1">
+            <p className="text-base font-semibold text-apple-text-primary m-0">Unauthorized Device</p>
+            <p className="text-sm text-apple-text-secondary m-0 whitespace-pre-line">
               Device detected but not authorized. On your phone:{'\n'}
               1. Look for the &quot;Allow USB debugging&quot; popup{'\n'}
               2. Check &quot;Always allow from this computer&quot;{'\n'}
@@ -99,11 +62,11 @@ export default function DeviceStatus() {
 
     case 'no-device':
       return (
-        <div style={containerStyle}>
-          <div style={indicatorStyle('#ef4444')} />
-          <div style={textContainerStyle}>
-            <p style={titleStyle}>No Device Detected</p>
-            <p style={detailsStyle}>
+        <div className="bg-white rounded-xl shadow-apple p-6 w-full max-w-[500px] flex items-center gap-3">
+          <StatusIndicator color="red" />
+          <div className="flex flex-col gap-1">
+            <p className="text-base font-semibold text-apple-text-primary m-0">No Device Detected</p>
+            <p className="text-sm text-apple-text-secondary m-0 whitespace-pre-line">
               No Android device detected. Make sure:{'\n'}
               {'\u2022'} USB cable is connected{'\n'}
               {'\u2022'} USB debugging is enabled on your phone{'\n'}
@@ -115,13 +78,13 @@ export default function DeviceStatus() {
 
     case 'adb-not-installed':
       return (
-        <div style={containerStyle}>
-          <div style={indicatorStyle('#ef4444')} />
-          <div style={textContainerStyle}>
-            <p style={titleStyle}>ADB Not Installed</p>
-            <p style={detailsStyle}>
+        <div className="bg-white rounded-xl shadow-apple p-6 w-full max-w-[500px] flex items-center gap-3">
+          <StatusIndicator color="red" />
+          <div className="flex flex-col gap-1">
+            <p className="text-base font-semibold text-apple-text-primary m-0">ADB Not Installed</p>
+            <p className="text-sm text-apple-text-secondary m-0">
               ADB is not installed. Install it with:{'\n'}
-              <span style={codeStyle}>brew install android-platform-tools</span>
+              <code className="font-mono bg-apple-bg-secondary px-1.5 py-0.5 rounded text-xs">brew install android-platform-tools</code>
             </p>
           </div>
         </div>
@@ -129,11 +92,11 @@ export default function DeviceStatus() {
 
     case 'error':
       return (
-        <div style={containerStyle}>
-          <div style={indicatorStyle('#ef4444')} />
-          <div style={textContainerStyle}>
-            <p style={titleStyle}>Error</p>
-            <p style={detailsStyle}>{status.message}</p>
+        <div className="bg-white rounded-xl shadow-apple p-6 w-full max-w-[500px] flex items-center gap-3">
+          <StatusIndicator color="red" />
+          <div className="flex flex-col gap-1">
+            <p className="text-base font-semibold text-apple-text-primary m-0">Error</p>
+            <p className="text-sm text-apple-text-secondary m-0">{status.message}</p>
           </div>
         </div>
       );

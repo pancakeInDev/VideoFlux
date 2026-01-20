@@ -8,138 +8,6 @@ interface TransferProgressProps {
   canStartTransfer: boolean;
 }
 
-const containerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '12px',
-  padding: '16px 24px',
-  backgroundColor: '#252540',
-  borderRadius: '12px',
-  marginTop: '16px',
-  maxWidth: '700px',
-  width: '100%',
-};
-
-const headerStyle: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  gap: '12px',
-};
-
-const titleStyle: React.CSSProperties = {
-  fontSize: '1rem',
-  fontWeight: 600,
-  margin: 0,
-  color: '#eaeaea',
-};
-
-const buttonStyle = (disabled: boolean, variant: 'primary' | 'secondary' | 'danger' = 'primary'): React.CSSProperties => {
-  const baseStyle: React.CSSProperties = {
-    padding: '6px 12px',
-    fontSize: '0.8rem',
-    fontWeight: 600,
-    border: 'none',
-    borderRadius: '6px',
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    transition: 'background-color 0.2s',
-  };
-
-  if (disabled) {
-    return { ...baseStyle, backgroundColor: '#4a4a6a', color: '#9ca3af' };
-  }
-
-  switch (variant) {
-    case 'danger':
-      return { ...baseStyle, backgroundColor: '#ef4444', color: '#ffffff' };
-    case 'secondary':
-      return { ...baseStyle, backgroundColor: '#374151', color: '#ffffff' };
-    default:
-      return { ...baseStyle, backgroundColor: '#6366f1', color: '#ffffff' };
-  }
-};
-
-const progressBarContainerStyle: React.CSSProperties = {
-  width: '100%',
-  height: '8px',
-  backgroundColor: '#374151',
-  borderRadius: '4px',
-  overflow: 'hidden',
-};
-
-const progressBarFillStyle = (percent: number): React.CSSProperties => ({
-  width: `${percent}%`,
-  height: '100%',
-  backgroundColor: '#6366f1',
-  transition: 'width 0.2s ease-out',
-});
-
-const statusTextStyle: React.CSSProperties = {
-  fontSize: '0.875rem',
-  color: '#9ca3af',
-  margin: 0,
-};
-
-const currentFileStyle: React.CSSProperties = {
-  fontSize: '0.875rem',
-  color: '#eaeaea',
-  margin: 0,
-  wordBreak: 'break-all',
-};
-
-const summaryContainerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '8px',
-  backgroundColor: '#1a1a2e',
-  borderRadius: '8px',
-  padding: '12px',
-};
-
-const summaryRowStyle: React.CSSProperties = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  fontSize: '0.875rem',
-};
-
-const successTextStyle: React.CSSProperties = {
-  color: '#10b981',
-};
-
-const errorTextStyle: React.CSSProperties = {
-  color: '#ef4444',
-};
-
-const failedFilesContainerStyle: React.CSSProperties = {
-  marginTop: '8px',
-  padding: '10px 12px',
-  backgroundColor: '#fef2f2',
-  borderRadius: '8px',
-  fontSize: '0.8rem',
-};
-
-const failedFileItemStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '2px',
-  padding: '6px 0',
-  borderBottom: '1px solid #fecaca',
-};
-
-const idleContainerStyle: React.CSSProperties = {
-  textAlign: 'center',
-  padding: '16px',
-};
-
-const checkingTextStyle: React.CSSProperties = {
-  fontSize: '0.875rem',
-  color: '#9ca3af',
-  textAlign: 'center',
-  padding: '16px',
-  margin: 0,
-};
-
 export default function TransferProgress({
   progress,
   onCancel,
@@ -151,16 +19,16 @@ export default function TransferProgress({
     switch (progress.status) {
       case 'idle':
         return (
-          <div style={idleContainerStyle}>
+          <div className="text-center py-4">
             <button
-              style={buttonStyle(!canStartTransfer)}
+              className="bg-apple-blue text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity duration-150 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
               onClick={onStartTransfer}
               disabled={!canStartTransfer}
             >
               Start Transfer
             </button>
             {!canStartTransfer && (
-              <p style={{ ...statusTextStyle, marginTop: '8px' }}>
+              <p className="text-sm text-apple-text-secondary m-0 mt-2">
                 Select videos and destination to start transfer
               </p>
             )}
@@ -168,7 +36,7 @@ export default function TransferProgress({
         );
 
       case 'checking':
-        return <p style={checkingTextStyle}>Checking files...</p>;
+        return <p className="text-sm text-apple-text-secondary text-center py-4 m-0">Checking files...</p>;
 
       case 'transferring': {
         const { currentFile, currentFileIndex = 0, totalFiles = 0, fileProgress = 0 } = progress;
@@ -179,16 +47,22 @@ export default function TransferProgress({
         return (
           <>
             <div>
-              <p style={statusTextStyle}>
+              <p className="text-sm text-apple-text-secondary m-0">
                 Transferring file {currentFileIndex + 1} of {totalFiles}
               </p>
-              {currentFile && <p style={currentFileStyle}>{currentFile}</p>}
+              {currentFile && <p className="text-sm text-apple-text-primary m-0 break-all">{currentFile}</p>}
             </div>
-            <div style={progressBarContainerStyle}>
-              <div style={progressBarFillStyle(overallProgress)} />
+            <div className="w-full h-2 bg-gray-200 rounded overflow-hidden">
+              <div
+                className="h-full bg-apple-blue transition-[width] duration-200 ease-out"
+                style={{ width: `${overallProgress}%` }}
+              />
             </div>
-            <p style={statusTextStyle}>{overallProgress}% complete</p>
-            <button style={buttonStyle(false, 'danger')} onClick={onCancel}>
+            <p className="text-sm text-apple-text-secondary m-0">{overallProgress}% complete</p>
+            <button
+              className="bg-apple-red text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-opacity duration-150"
+              onClick={onCancel}
+            >
               Cancel
             </button>
           </>
@@ -200,47 +74,47 @@ export default function TransferProgress({
 
         return (
           <>
-            <div style={summaryContainerStyle}>
-              <p style={{ ...titleStyle, fontSize: '0.9rem' }}>Transfer Complete</p>
-              <div style={summaryRowStyle}>
-                <span style={{ color: '#9ca3af' }}>Total files:</span>
-                <span style={{ color: '#eaeaea' }}>{totalFiles}</span>
+            <div className="flex flex-col gap-2 bg-apple-bg-secondary rounded-lg p-3">
+              <p className="text-sm font-semibold text-apple-text-primary m-0">Transfer Complete</p>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-apple-text-secondary">Total files:</span>
+                <span className="text-apple-text-primary">{totalFiles}</span>
               </div>
-              <div style={summaryRowStyle}>
-                <span style={{ color: '#9ca3af' }}>Successful:</span>
-                <span style={successTextStyle}>{completedFiles.length}</span>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-apple-text-secondary">Successful:</span>
+                <span className="text-apple-green">{completedFiles.length}</span>
               </div>
               {failedFiles.length > 0 && (
-                <div style={summaryRowStyle}>
-                  <span style={{ color: '#9ca3af' }}>Failed:</span>
-                  <span style={errorTextStyle}>{failedFiles.length}</span>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-apple-text-secondary">Failed:</span>
+                  <span className="text-apple-red">{failedFiles.length}</span>
                 </div>
               )}
             </div>
 
             {failedFiles.length > 0 && (
-              <div style={failedFilesContainerStyle}>
-                <p style={{ margin: '0 0 8px 0', fontWeight: 600, color: '#991b1b' }}>
+              <div className="mt-2 p-3 bg-red-50 rounded-lg text-xs">
+                <p className="m-0 mb-2 font-semibold text-red-800">
                   Failed transfers:
                 </p>
                 {failedFiles.map((file, index) => (
                   <div
                     key={file.path}
-                    style={{
-                      ...failedFileItemStyle,
-                      borderBottom: index === failedFiles.length - 1 ? 'none' : '1px solid #fecaca',
-                    }}
+                    className={`flex flex-col gap-0.5 py-1.5 ${index !== failedFiles.length - 1 ? 'border-b border-red-200' : ''}`}
                   >
-                    <span style={{ color: '#991b1b', fontWeight: 500 }}>
+                    <span className="text-red-800 font-medium">
                       {file.path.split('/').pop()}
                     </span>
-                    <span style={{ color: '#b91c1c' }}>{file.error}</span>
+                    <span className="text-red-700">{file.error}</span>
                   </div>
                 ))}
               </div>
             )}
 
-            <button style={buttonStyle(false, 'secondary')} onClick={onDismiss}>
+            <button
+              className="bg-apple-bg-secondary text-apple-text-primary px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-150"
+              onClick={onDismiss}
+            >
               Dismiss
             </button>
           </>
@@ -252,25 +126,28 @@ export default function TransferProgress({
 
         return (
           <>
-            <div style={summaryContainerStyle}>
-              <p style={{ ...titleStyle, fontSize: '0.9rem', color: '#f59e0b' }}>
+            <div className="flex flex-col gap-2 bg-apple-bg-secondary rounded-lg p-3">
+              <p className="text-sm font-semibold text-apple-yellow m-0">
                 Transfer Cancelled
               </p>
               {completedFiles.length > 0 && (
-                <div style={summaryRowStyle}>
-                  <span style={{ color: '#9ca3af' }}>Files transferred before cancel:</span>
-                  <span style={successTextStyle}>{completedFiles.length}</span>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-apple-text-secondary">Files transferred before cancel:</span>
+                  <span className="text-apple-green">{completedFiles.length}</span>
                 </div>
               )}
               {failedFiles.length > 0 && (
-                <div style={summaryRowStyle}>
-                  <span style={{ color: '#9ca3af' }}>Failed:</span>
-                  <span style={errorTextStyle}>{failedFiles.length}</span>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-apple-text-secondary">Failed:</span>
+                  <span className="text-apple-red">{failedFiles.length}</span>
                 </div>
               )}
             </div>
 
-            <button style={buttonStyle(false, 'secondary')} onClick={onDismiss}>
+            <button
+              className="bg-apple-bg-secondary text-apple-text-primary px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-150"
+              onClick={onDismiss}
+            >
               Dismiss
             </button>
           </>
@@ -280,16 +157,19 @@ export default function TransferProgress({
       case 'error':
         return (
           <>
-            <div style={summaryContainerStyle}>
-              <p style={{ ...titleStyle, fontSize: '0.9rem', color: '#ef4444' }}>
+            <div className="flex flex-col gap-2 bg-apple-bg-secondary rounded-lg p-3">
+              <p className="text-sm font-semibold text-apple-red m-0">
                 Transfer Error
               </p>
               {progress.errorMessage && (
-                <p style={{ ...statusTextStyle, color: '#ef4444' }}>{progress.errorMessage}</p>
+                <p className="text-sm text-apple-red m-0">{progress.errorMessage}</p>
               )}
             </div>
 
-            <button style={buttonStyle(false, 'secondary')} onClick={onDismiss}>
+            <button
+              className="bg-apple-bg-secondary text-apple-text-primary px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-150"
+              onClick={onDismiss}
+            >
               Dismiss
             </button>
           </>
@@ -301,9 +181,9 @@ export default function TransferProgress({
   };
 
   return (
-    <div style={containerStyle}>
-      <div style={headerStyle}>
-        <p style={titleStyle}>File Transfer</p>
+    <div className="bg-white rounded-xl shadow-apple p-6 w-full max-w-[700px] flex flex-col gap-3">
+      <div className="flex justify-between items-center gap-3">
+        <p className="text-base font-semibold text-apple-text-primary m-0">File Transfer</p>
       </div>
       {renderContent()}
     </div>

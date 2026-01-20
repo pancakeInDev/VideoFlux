@@ -12,24 +12,6 @@ import type {
   LargeFileWarning as LargeFileWarningType,
 } from '../shared/types';
 
-const containerStyle: React.CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minHeight: '100vh',
-  backgroundColor: '#1a1a2e',
-  color: '#eaeaea',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-  margin: 0,
-};
-
-const headingStyle: React.CSSProperties = {
-  fontSize: '3rem',
-  fontWeight: 700,
-  margin: 0,
-};
-
 export default function App() {
   const [deviceStatus, setDeviceStatus] = useState<DeviceStatusType | null>(null);
   const [selectedVideoPaths, setSelectedVideoPaths] = useState<string[]>([]);
@@ -94,19 +76,21 @@ export default function App() {
   }, []);
 
   return (
-    <div style={containerStyle} className="tailwind-test">
-      <h1 style={headingStyle}>VideoFlux</h1>
-      <DeviceStatus />
-      <MirrorControl deviceStatus={deviceStatus} />
-      <VideoList deviceStatus={deviceStatus} onSelectionChange={handleSelectionChange} />
-      <DestinationPicker destinationInfo={destinationInfo} onDestinationChange={handleDestinationChange} />
-      <TransferProgress
-        progress={transferProgress}
-        onCancel={handleCancelTransfer}
-        onDismiss={handleDismissTransfer}
-        onStartTransfer={handleStartTransfer}
-        canStartTransfer={canStartTransfer}
-      />
+    <div className="min-h-screen bg-apple-bg-secondary font-sans flex flex-col items-center justify-start pt-8 pb-8">
+      <h1 className="text-5xl font-bold text-apple-text-primary m-0 mb-6">VideoFlux</h1>
+      <div className="w-full max-w-3xl flex flex-col items-center gap-4 px-4">
+        <DeviceStatus />
+        <MirrorControl deviceStatus={deviceStatus} />
+        <VideoList deviceStatus={deviceStatus} onSelectionChange={handleSelectionChange} />
+        <DestinationPicker destinationInfo={destinationInfo} onDestinationChange={handleDestinationChange} />
+        <TransferProgress
+          progress={transferProgress}
+          onCancel={handleCancelTransfer}
+          onDismiss={handleDismissTransfer}
+          onStartTransfer={handleStartTransfer}
+          canStartTransfer={canStartTransfer}
+        />
+      </div>
       {largeFileWarning && (
         <LargeFileWarning
           warning={largeFileWarning}
