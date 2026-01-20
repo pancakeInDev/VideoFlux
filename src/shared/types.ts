@@ -18,6 +18,7 @@ export interface VideoFile {
   size: number;
   sizeHuman: string;
   modified: Date;
+  thumbnail?: string;
 }
 
 export interface FilesystemInfo {

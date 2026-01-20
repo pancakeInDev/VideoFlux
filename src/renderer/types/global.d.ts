@@ -14,6 +14,7 @@ interface VideoFluxAPI {
   getMirrorStatus: () => Promise<MirrorStatus>;
   onMirrorStatusChange: (callback: (status: MirrorStatus) => void) => () => void;
   listVideos: () => Promise<VideoFile[]>;
+  getVideoThumbnail: (videoPath: string) => Promise<string | undefined>;
   deleteVideos: (filePaths: string[]) => Promise<{ deleted: string[]; failed: Array<{ path: string; error: string }> }>;
   selectDestination: () => Promise<DestinationInfo | null>;
   getDestination: () => Promise<DestinationInfo | null>;

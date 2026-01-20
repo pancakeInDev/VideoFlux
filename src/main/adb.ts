@@ -85,6 +85,52 @@ export async function getConnectedDevice(): Promise<DeviceStatus> {
   }
 }
 
+async function getVideoMediaId(videoPath: string): Promise<string | undefined> {
+  try {
+    const filename = path.basename(videoPath, path.extname(videoPath));
+    const { stdout } = await execAsync(
+      `adb shell "content query --uri content://media/external/video/media --projection _id --where \\"_data LIKE '%${filename}%'\\""`
+    );
+    const match = stdout.match(/_id=(\d+)/);
+    return match ? match[1] : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+export async function getVideoThumbnail(videoPath: string): Promise<string | undefined> {
+  const mediaId = await getVideoMediaId(videoPath);
+  if (!mediaId) {
+    return undefined;
+  }
+
+  return new Promise((resolve) => {
+    const child = spawn('adb', [
+      'shell',
+      `content read --uri content://media/external/video/media/${mediaId}/thumbnail`
+    ]);
+
+    const chunks: Buffer[] = [];
+    child.stdout.on('data', (chunk: Buffer) => chunks.push(chunk));
+
+    child.on('close', (code) => {
+      const output = Buffer.concat(chunks);
+      if (code === 0 && output.length > 500) {
+        resolve(`data:image/jpeg;base64,${output.toString('base64')}`);
+      } else {
+        resolve(undefined);
+      }
+    });
+
+    child.on('error', () => resolve(undefined));
+
+    setTimeout(() => {
+      child.kill('SIGKILL');
+      resolve(undefined);
+    }, 10000);
+  });
+}
+
 export async function listVideos(): Promise<VideoFile[]> {
   const adbInstalled = await checkAdbInstalled();
   if (!adbInstalled) {
@@ -170,34 +216,21 @@ export interface DeleteResult {
 }
 
 export async function deleteFile(filePath: string): Promise<DeleteResult> {
-  console.log('[deleteFile] Starting delete for:', filePath);
-
   const adbInstalled = await checkAdbInstalled();
   if (!adbInstalled) {
-    console.log('[deleteFile] ADB not installed');
     return { success: false, error: 'ADB not installed' };
   }
 
-  const command = `adb shell rm "${filePath}"`;
-  console.log('[deleteFile] Running command:', command);
-
   try {
-    const { stdout, stderr } = await execAsync(command);
-    console.log('[deleteFile] stdout:', stdout);
-    console.log('[deleteFile] stderr:', stderr);
+    const { stderr } = await execAsync(`adb shell rm "${filePath}"`);
 
     if (stderr && stderr.trim()) {
-      console.log('[deleteFile] stderr not empty, treating as error');
       return { success: false, error: `Delete failed: ${stderr.trim()}` };
     }
 
-    console.log('[deleteFile] Success!');
     return { success: true };
   } catch (error) {
-    console.log('[deleteFile] Exception caught:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';
-    const fullError = JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
-    console.log('[deleteFile] Full error object:', fullError);
 
     if (message.includes('No such file')) {
       return { success: false, error: 'File not found on device' };
@@ -213,16 +246,11 @@ export async function deleteFile(filePath: string): Promise<DeleteResult> {
 }
 
 export async function deleteFiles(filePaths: string[]): Promise<{ deleted: string[]; failed: Array<{ path: string; error: string }> }> {
-  console.log('[deleteFiles] Called with paths:', filePaths);
-  console.log('[deleteFiles] Number of files:', filePaths.length);
-
   const deleted: string[] = [];
   const failed: Array<{ path: string; error: string }> = [];
 
   for (const filePath of filePaths) {
-    console.log('[deleteFiles] Processing:', filePath);
     const result = await deleteFile(filePath);
-    console.log('[deleteFiles] Result for', filePath, ':', result);
 
     if (result.success) {
       deleted.push(filePath);
@@ -231,7 +259,6 @@ export async function deleteFiles(filePaths: string[]): Promise<{ deleted: strin
     }
   }
 
-  console.log('[deleteFiles] Final result - deleted:', deleted.length, 'failed:', failed.length);
   return { deleted, failed };
 }
 

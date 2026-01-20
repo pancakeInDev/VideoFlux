@@ -29,6 +29,7 @@ contextBridge.exposeInMainWorld('videoFlux', {
   },
 
   listVideos: (): Promise<VideoFile[]> => ipcRenderer.invoke('videos:list'),
+  getVideoThumbnail: (videoPath: string): Promise<string | undefined> => ipcRenderer.invoke('videos:thumbnail', videoPath),
   deleteVideos: (filePaths: string[]): Promise<{ deleted: string[]; failed: Array<{ path: string; error: string }> }> =>
     ipcRenderer.invoke('videos:delete', filePaths),
 

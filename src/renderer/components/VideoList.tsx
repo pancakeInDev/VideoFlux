@@ -18,6 +18,7 @@ function formatDate(date: Date): string {
 
 export default function VideoList({ deviceStatus, onSelectionChange }: VideoListProps) {
   const [videos, setVideos] = useState<VideoFile[]>([]);
+  const [thumbnails, setThumbnails] = useState<Record<string, string>>({});
   const [selectedPaths, setSelectedPaths] = useState<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -25,10 +26,22 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
 
   const isDeviceConnected = deviceStatus?.status === 'connected';
 
+  const fetchThumbnail = useCallback(async (videoPath: string) => {
+    try {
+      const thumb = await window.videoFlux.getVideoThumbnail(videoPath);
+      if (thumb) {
+        setThumbnails(prev => ({ ...prev, [videoPath]: thumb }));
+      }
+    } catch {
+      // Silently fail - thumbnails are optional
+    }
+  }, []);
+
   const fetchVideos = useCallback(async () => {
     if (!isDeviceConnected) return;
 
     setIsLoading(true);
+    setThumbnails({});
     try {
       const videoList = await window.videoFlux.listVideos();
       const parsedVideos = videoList.map(v => ({
@@ -37,10 +50,12 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
       }));
       setVideos(parsedVideos);
       setSelectedPaths(new Set());
+
+      parsedVideos.forEach(v => fetchThumbnail(v.path));
     } finally {
       setIsLoading(false);
     }
-  }, [isDeviceConnected]);
+  }, [isDeviceConnected, fetchThumbnail]);
 
   useEffect(() => {
     if (isDeviceConnected) {
@@ -193,6 +208,7 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
             <thead>
               <tr>
                 <th className="py-2.5 px-3 text-left border-b border-apple-border text-apple-text-secondary font-medium sticky top-0 bg-apple-bg-secondary w-10 text-center"></th>
+                <th className="py-2.5 px-2 text-left border-b border-apple-border text-apple-text-secondary font-medium sticky top-0 bg-apple-bg-secondary w-16"></th>
                 <th className="py-2.5 px-3 text-left border-b border-apple-border text-apple-text-secondary font-medium sticky top-0 bg-apple-bg-secondary">Filename</th>
                 <th className="py-2.5 px-3 text-left border-b border-apple-border text-apple-text-secondary font-medium sticky top-0 bg-apple-bg-secondary w-20">Size</th>
                 <th className="py-2.5 px-3 text-left border-b border-apple-border text-apple-text-secondary font-medium sticky top-0 bg-apple-bg-secondary w-[150px]">Modified</th>
@@ -201,7 +217,7 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
             <tbody>
               {videos.map(video => (
                 <tr key={video.path} className="hover:bg-gray-100">
-                  <td className="py-2.5 px-3 border-b border-apple-border text-apple-text-primary w-10 text-center">
+                  <td className="py-2 px-3 border-b border-apple-border text-apple-text-primary w-10 text-center">
                     <input
                       type="checkbox"
                       className="w-4 h-4 cursor-pointer accent-apple-blue"
@@ -209,9 +225,24 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
                       onChange={() => handleToggleSelection(video.path)}
                     />
                   </td>
-                  <td className="py-2.5 px-3 border-b border-apple-border text-apple-text-primary">{video.filename}</td>
-                  <td className="py-2.5 px-3 border-b border-apple-border text-apple-text-primary">{video.sizeHuman}</td>
-                  <td className="py-2.5 px-3 border-b border-apple-border text-apple-text-primary">{formatDate(video.modified)}</td>
+                  <td className="py-2 px-2 border-b border-apple-border w-16">
+                    <div className="w-12 h-9 rounded bg-gray-200 overflow-hidden flex items-center justify-center">
+                      {thumbnails[video.path] ? (
+                        <img
+                          src={thumbnails[video.path]}
+                          alt=""
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
+                        </svg>
+                      )}
+                    </div>
+                  </td>
+                  <td className="py-2 px-3 border-b border-apple-border text-apple-text-primary">{video.filename}</td>
+                  <td className="py-2 px-3 border-b border-apple-border text-apple-text-primary">{video.sizeHuman}</td>
+                  <td className="py-2 px-3 border-b border-apple-border text-apple-text-primary">{formatDate(video.modified)}</td>
                 </tr>
               ))}
             </tbody>

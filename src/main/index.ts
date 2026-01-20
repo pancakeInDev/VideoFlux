@@ -1,6 +1,6 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
-import { getConnectedDevice, listVideos, getFileSize, transferFile, deleteFiles } from './adb.js';
+import { getConnectedDevice, listVideos, getVideoThumbnail, getFileSize, transferFile, deleteFiles } from './adb.js';
 import { startMirror, stopMirror, getMirrorStatus, cleanupOnQuit } from './scrcpy.js';
 import { selectFolder, getFilesystemType } from './filesystem.js';
 import { getDestination, setDestination } from './store.js';
@@ -103,6 +103,10 @@ ipcMain.handle('mirror:status', (): MirrorStatus => {
 
 ipcMain.handle('videos:list', async (): Promise<VideoFile[]> => {
   return listVideos();
+});
+
+ipcMain.handle('videos:thumbnail', async (_, videoPath: string): Promise<string | undefined> => {
+  return getVideoThumbnail(videoPath);
 });
 
 interface DeleteResult {
