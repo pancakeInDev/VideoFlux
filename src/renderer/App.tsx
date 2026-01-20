@@ -1,3 +1,5 @@
+import DeviceStatus from './components/DeviceStatus';
+
 const containerStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
@@ -20,6 +22,7 @@ export default function App() {
   return (
     <div style={containerStyle}>
       <h1 style={headingStyle}>VideoFlux</h1>
+      <DeviceStatus />
     </div>
   );
 }

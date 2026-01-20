@@ -20,10 +20,10 @@ The app wraps existing command-line tools (scrcpy, adb) in a clean, user-friendl
 ## Acceptance Criteria
 
 ### Device Connection
-- [ ] App detects when an Android device is connected via USB with ADB debugging enabled
-- [ ] App displays clear device status: "Connected" with device name or "No device detected"
-- [ ] App shows helpful guidance when no device is detected (enable USB debugging, authorize computer, etc.)
-- [ ] App handles device disconnection gracefully with clear feedback
+- [x] App detects when an Android device is connected via USB with ADB debugging enabled
+- [x] App displays clear device status: "Connected" with device name or "No device detected"
+- [x] App shows helpful guidance when no device is detected (enable USB debugging, authorize computer, etc.)
+- [x] App handles device disconnection gracefully with clear feedback
 
 ### Screen Mirroring
 - [ ] User can launch scrcpy mirroring with a single button click
@@ -57,9 +57,9 @@ The app wraps existing command-line tools (scrcpy, adb) in a clean, user-friendl
 - [ ] Failed transfers show clear error message with reason
 
 ### Error Handling
-- [ ] ADB not installed: app shows installation instructions
+- [x] ADB not installed: app shows installation instructions
 - [ ] scrcpy not installed: app shows installation instructions
-- [ ] Device not authorized: app shows step-by-step authorization guide
+- [x] Device not authorized: app shows step-by-step authorization guide
 - [ ] Transfer failure: app shows specific error (permission denied, disk full, etc.)
 - [ ] All errors are dismissible and don't block app usage
 
@@ -190,7 +190,7 @@ After each Phase Agent + QA cycle completes:
 ### Current Progress
 
 **Started**: 2026-01-20
-**Current Phase**: 1 / 6
+**Current Phase**: 2 / 6
 **Last Updated**: 2026-01-20
 
 ---
@@ -315,7 +315,7 @@ diskutil info /Volumes/SSD | grep "File System Personality"
 
 **Status**: COMPLETE
 **Completed**: 2026-01-20
-**Commit**: (pending)
+**Commit**: 370a3c5
 **QA Results**: typecheck OK, lint OK, build OK
 
 **Acceptance criteria covered**:
@@ -354,18 +354,18 @@ diskutil info /Volumes/SSD | grep "File System Personality"
 
 **Goal**: App detects and displays Android device connection status in real-time
 
-**Status**: PENDING
-**Completed**: —
-**Commit**: —
-**QA Results**: —
+**Status**: COMPLETE
+**Completed**: 2026-01-20
+**Commit**: (pending)
+**QA Results**: typecheck OK, lint OK
 
 **Acceptance criteria covered**:
-- [ ] App detects when an Android device is connected via USB with ADB debugging enabled
-- [ ] App displays clear device status: "Connected" with device name or "No device detected"
-- [ ] App shows helpful guidance when no device is detected
-- [ ] App handles device disconnection gracefully with clear feedback
-- [ ] ADB not installed: app shows installation instructions
-- [ ] Device not authorized: app shows step-by-step authorization guide
+- [x] App detects when an Android device is connected via USB with ADB debugging enabled
+- [x] App displays clear device status: "Connected" with device name or "No device detected"
+- [x] App shows helpful guidance when no device is detected
+- [x] App handles device disconnection gracefully with clear feedback
+- [x] ADB not installed: app shows installation instructions
+- [x] Device not authorized: app shows step-by-step authorization guide
 
 **Implementation notes**:
 - Create `src/main/adb.ts` with functions:
