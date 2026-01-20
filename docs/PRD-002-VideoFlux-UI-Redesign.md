@@ -36,16 +36,16 @@ Additionally, once the UI redesign is complete, the project needs comprehensive 
 - [x] Accent color is Apple blue (#007AFF) for primary actions
 - [x] Status indicators use semantic colors: green (#34C759), yellow (#FF9500), red (#FF3B30)
 - [x] Border radius follows Apple conventions (8px for cards, 6px for buttons)
-- [ ] Overall visual impression matches macOS System Preferences aesthetic
+- [x] Overall visual impression matches macOS System Preferences aesthetic
 
 ### Animations & Micro-interactions
 
-- [ ] Buttons have smooth hover state transitions (150-200ms ease)
-- [ ] Focus states are visible and use ring styling
-- [ ] Loading states use subtle opacity or spinner animations
-- [ ] Status indicator dots have a subtle pulse animation when active
-- [ ] Card hover states have subtle lift effect (translateY + shadow change)
-- [ ] Transitions feel snappy, not sluggish (no transition longer than 300ms)
+- [x] Buttons have smooth hover state transitions (150-200ms ease)
+- [x] Focus states are visible and use ring styling
+- [x] Loading states use subtle opacity or spinner animations
+- [x] Status indicator dots have a subtle pulse animation when active
+- [x] Card hover states have subtle lift effect (translateY + shadow change)
+- [x] Transitions feel snappy, not sluggish (no transition longer than 300ms)
 
 ### Component Refactoring
 
@@ -75,10 +75,10 @@ Additionally, once the UI redesign is complete, the project needs comprehensive 
 
 ### Error Handling (Visual)
 
-- [ ] Error states use Apple-style inline alerts (not modals for minor errors)
-- [ ] Installation guidance (ADB/scrcpy missing) is visually clear
-- [ ] Empty states have helpful illustrations or icons
-- [ ] All error messages are dismissible
+- [x] Error states use Apple-style inline alerts (not modals for minor errors)
+- [x] Installation guidance (ADB/scrcpy missing) is visually clear
+- [x] Empty states have helpful illustrations or icons
+- [x] All error messages are dismissible
 
 ## Scope
 
@@ -217,7 +217,7 @@ After each Phase Agent + QA cycle completes:
 ### Current Progress
 
 **Started**: 2026-01-20
-**Current Phase**: 2 / 4
+**Current Phase**: 3 / 4
 **Last Updated**: 2026-01-20
 
 ---
@@ -389,7 +389,7 @@ import './styles/main.css';
 
 **Status**: COMPLETE
 **Completed**: 2026-01-20
-**Commit**: pending
+**Commit**: ebfeac4
 **QA Results**: typecheck OK, lint OK, components render in Electron
 
 **Acceptance criteria covered**:
@@ -503,23 +503,23 @@ Status indicator:
 
 **Goal**: Smooth animations, micro-interactions, and visual polish
 
-**Status**: PENDING
-**Completed**: --
-**Commit**: --
-**QA Results**: --
+**Status**: COMPLETE
+**Completed**: 2026-01-20
+**Commit**: pending
+**QA Results**: typecheck OK, lint OK
 
 **Acceptance criteria covered**:
-- [ ] Buttons have smooth hover state transitions (150-200ms ease)
-- [ ] Focus states are visible and use ring styling
-- [ ] Loading states use subtle opacity or spinner animations
-- [ ] Status indicator dots have a subtle pulse animation when active
-- [ ] Card hover states have subtle lift effect
-- [ ] Transitions feel snappy, not sluggish
-- [ ] Overall visual impression matches macOS System Preferences aesthetic
-- [ ] Error states use Apple-style inline alerts
-- [ ] Installation guidance is visually clear
-- [ ] Empty states have helpful icons
-- [ ] All error messages are dismissible
+- [x] Buttons have smooth hover state transitions (150-200ms ease)
+- [x] Focus states are visible and use ring styling
+- [x] Loading states use subtle opacity or spinner animations
+- [x] Status indicator dots have a subtle pulse animation when active
+- [x] Card hover states have subtle lift effect
+- [x] Transitions feel snappy, not sluggish
+- [x] Overall visual impression matches macOS System Preferences aesthetic
+- [x] Error states use Apple-style inline alerts
+- [x] Installation guidance is visually clear
+- [x] Empty states have helpful icons
+- [x] All error messages are dismissible
 
 **Implementation notes**:
 

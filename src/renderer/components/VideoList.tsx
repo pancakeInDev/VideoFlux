@@ -103,7 +103,12 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
         <div className="flex justify-between items-center gap-3">
           <p className="text-base font-semibold text-apple-text-primary m-0">Videos</p>
         </div>
-        <p className="text-sm text-apple-text-secondary m-0 text-center py-4">Connect a device to browse videos</p>
+        <div className="flex flex-col items-center gap-2 py-6 text-apple-text-secondary">
+          <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+          </svg>
+          <p className="text-sm m-0">Connect a device to browse videos</p>
+        </div>
       </div>
     );
   }
@@ -114,28 +119,28 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
         <p className="text-base font-semibold text-apple-text-primary m-0">Videos</p>
         <div className="flex gap-2">
           <button
-            className="bg-apple-bg-secondary text-apple-text-primary px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-gray-200 transition-colors duration-150 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            className="bg-apple-bg-secondary text-apple-text-primary px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-gray-200 transition-all duration-150 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-apple-blue focus-visible:ring-offset-2"
             onClick={handleSelectAll}
             disabled={isLoading || videos.length === 0}
           >
             Select All
           </button>
           <button
-            className="bg-apple-bg-secondary text-apple-text-primary px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-gray-200 transition-colors duration-150 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            className="bg-apple-bg-secondary text-apple-text-primary px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-gray-200 transition-all duration-150 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-apple-blue focus-visible:ring-offset-2"
             onClick={handleDeselectAll}
             disabled={isLoading || selectedPaths.size === 0}
           >
             Deselect All
           </button>
           <button
-            className="bg-apple-blue text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:opacity-90 transition-opacity duration-150 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+            className="bg-apple-blue text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:opacity-90 transition-all duration-150 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-apple-blue focus-visible:ring-offset-2"
             onClick={fetchVideos}
             disabled={isLoading}
           >
             {isLoading ? 'Loading...' : 'Refresh'}
           </button>
           <button
-            className="bg-apple-red text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:opacity-90 transition-opacity duration-150 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+            className="bg-apple-red text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:opacity-90 transition-all duration-150 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-apple-red focus-visible:ring-offset-2"
             onClick={handleDeleteSelected}
             disabled={isLoading || isDeleting || selectedPaths.size === 0}
           >
@@ -149,18 +154,40 @@ export default function VideoList({ deviceStatus, onSelectionChange }: VideoList
       )}
 
       {deleteResult && (
-        <p className={`text-xs m-0 ${deleteResult.failed > 0 ? 'text-apple-red' : 'text-apple-green'}`}>
-          {deleteResult.deleted > 0 && `Deleted ${deleteResult.deleted} video${deleteResult.deleted !== 1 ? 's' : ''}`}
-          {deleteResult.deleted > 0 && deleteResult.failed > 0 && ', '}
-          {deleteResult.failed > 0 && `${deleteResult.failed} failed`}
-        </p>
+        <div className={`flex items-center justify-between rounded-lg px-3 py-2 ${deleteResult.failed > 0 ? 'bg-red-50' : 'bg-green-50'}`}>
+          <p className={`text-xs m-0 ${deleteResult.failed > 0 ? 'text-apple-red' : 'text-apple-green'}`}>
+            {deleteResult.deleted > 0 && `Deleted ${deleteResult.deleted} video${deleteResult.deleted !== 1 ? 's' : ''}`}
+            {deleteResult.deleted > 0 && deleteResult.failed > 0 && ', '}
+            {deleteResult.failed > 0 && `${deleteResult.failed} failed`}
+          </p>
+          <button
+            className="text-apple-text-secondary hover:text-apple-text-primary transition-colors duration-150 p-1"
+            onClick={() => setDeleteResult(null)}
+            aria-label="Dismiss"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
       )}
 
       <div className="max-h-[300px] overflow-y-auto rounded-lg bg-apple-bg-secondary">
         {isLoading ? (
-          <p className="text-center py-8 text-sm text-apple-text-secondary">Loading videos...</p>
+          <div className="flex flex-col items-center gap-2 py-8 text-apple-text-secondary">
+            <svg className="w-8 h-8 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+            <p className="text-sm m-0">Loading videos...</p>
+          </div>
         ) : videos.length === 0 ? (
-          <p className="text-center py-8 text-sm text-apple-text-secondary">No videos found in DCIM/Camera</p>
+          <div className="flex flex-col items-center gap-2 py-8 text-apple-text-secondary">
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+            </svg>
+            <p className="text-sm m-0">No videos found in DCIM/Camera</p>
+          </div>
         ) : (
           <table className="w-full border-collapse text-sm">
             <thead>
