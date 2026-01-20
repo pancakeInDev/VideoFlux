@@ -94,7 +94,7 @@ export default function App() {
   }, []);
 
   return (
-    <div style={containerStyle}>
+    <div style={containerStyle} className="tailwind-test">
       <h1 style={headingStyle}>VideoFlux</h1>
       <DeviceStatus />
       <MirrorControl deviceStatus={deviceStatus} />
