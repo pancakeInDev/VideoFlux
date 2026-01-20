@@ -1,4 +1,4 @@
-import type { DeviceStatus, MirrorStatus } from '../../shared/types';
+import type { DeviceStatus, MirrorStatus, VideoFile } from '../../shared/types';
 
 interface VideoFluxAPI {
   getDeviceStatus: () => Promise<DeviceStatus>;
@@ -7,6 +7,7 @@ interface VideoFluxAPI {
   stopMirror: () => Promise<void>;
   getMirrorStatus: () => Promise<MirrorStatus>;
   onMirrorStatusChange: (callback: (status: MirrorStatus) => void) => () => void;
+  listVideos: () => Promise<VideoFile[]>;
 }
 
 declare global {

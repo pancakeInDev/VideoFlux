@@ -11,3 +11,11 @@ export type MirrorStatus =
   | { status: 'starting' }
   | { status: 'error'; message: string }
   | { status: 'scrcpy-not-installed' };
+
+export interface VideoFile {
+  path: string;
+  filename: string;
+  size: number;
+  sizeHuman: string;
+  modified: Date;
+}

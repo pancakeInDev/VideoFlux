@@ -1,8 +1,25 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import type { DeviceStatus } from '../shared/types.js';
+import type { DeviceStatus, VideoFile } from '../shared/types.js';
 
 const execAsync = promisify(exec);
+
+const VIDEO_EXTENSIONS = ['.mp4', '.mkv', '.mov', '.3gp'];
+const DCIM_CAMERA_PATH = '/sdcard/DCIM/Camera';
+
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
+}
+
+function parseDate(dateStr: string, timeStr: string): Date {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  return new Date(year, month - 1, day, hours, minutes);
+}
 
 export async function checkAdbInstalled(): Promise<boolean> {
   try {
@@ -61,5 +78,50 @@ export async function getConnectedDevice(): Promise<DeviceStatus> {
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error occurred';
     return { status: 'error', message };
+  }
+}
+
+export async function listVideos(): Promise<VideoFile[]> {
+  const adbInstalled = await checkAdbInstalled();
+  if (!adbInstalled) {
+    return [];
+  }
+
+  try {
+    const { stdout } = await execAsync(`adb shell ls -la "${DCIM_CAMERA_PATH}/"`);
+    const lines = stdout.trim().split('\n');
+    const videos: VideoFile[] = [];
+
+    for (const line of lines) {
+      if (line.startsWith('d') || line.startsWith('total')) continue;
+
+      const parts = line.trim().split(/\s+/);
+      if (parts.length < 7) continue;
+
+      const size = parseInt(parts[4], 10);
+      const dateStr = parts[5];
+      const timeStr = parts[6];
+      const filename = parts.slice(7).join(' ');
+
+      if (!filename || filename === '.' || filename === '..') continue;
+
+      const lowerFilename = filename.toLowerCase();
+      const isVideo = VIDEO_EXTENSIONS.some(ext => lowerFilename.endsWith(ext));
+      if (!isVideo) continue;
+
+      videos.push({
+        path: `${DCIM_CAMERA_PATH}/${filename}`,
+        filename,
+        size,
+        sizeHuman: formatBytes(size),
+        modified: parseDate(dateStr, timeStr),
+      });
+    }
+
+    videos.sort((a, b) => b.modified.getTime() - a.modified.getTime());
+
+    return videos;
+  } catch {
+    return [];
   }
 }

@@ -1,8 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'path';
-import { getConnectedDevice } from './adb.js';
+import { getConnectedDevice, listVideos } from './adb.js';
 import { startMirror, stopMirror, getMirrorStatus, cleanupOnQuit } from './scrcpy.js';
-import type { DeviceStatus, MirrorStatus } from '../shared/types.js';
+import type { DeviceStatus, MirrorStatus, VideoFile } from '../shared/types.js';
 
 let mainWindow: BrowserWindow | null = null;
 let pollingInterval: ReturnType<typeof setInterval> | null = null;
@@ -95,6 +95,10 @@ ipcMain.handle('mirror:stop', (): void => {
 
 ipcMain.handle('mirror:status', (): MirrorStatus => {
   return getMirrorStatus();
+});
+
+ipcMain.handle('videos:list', async (): Promise<VideoFile[]> => {
+  return listVideos();
 });
 
 app.whenReady().then(createWindow);

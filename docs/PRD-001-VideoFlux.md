@@ -34,12 +34,12 @@ The app wraps existing command-line tools (scrcpy, adb) in a clean, user-friendl
 - [x] If scrcpy fails to launch, app displays a clear error message
 
 ### Video File Browser
-- [ ] App lists video files from the phone's DCIM/Camera directory
-- [ ] Each video shows: filename, file size (human-readable), date modified
-- [ ] User can select multiple videos for transfer (checkboxes)
-- [ ] User can select/deselect all videos
-- [ ] List refreshes when user clicks a refresh button
-- [ ] Empty state shows clear message when no videos are found
+- [x] App lists video files from the phone's DCIM/Camera directory
+- [x] Each video shows: filename, file size (human-readable), date modified
+- [x] User can select multiple videos for transfer (checkboxes)
+- [x] User can select/deselect all videos
+- [x] List refreshes when user clicks a refresh button
+- [x] Empty state shows clear message when no videos are found
 
 ### Destination Selection
 - [ ] User can select any folder on their Mac as transfer destination via native folder picker
@@ -190,7 +190,7 @@ After each Phase Agent + QA cycle completes:
 ### Current Progress
 
 **Started**: 2026-01-20
-**Current Phase**: 3 / 6
+**Current Phase**: 4 / 6
 **Last Updated**: 2026-01-20
 
 ---
@@ -407,7 +407,7 @@ type DeviceStatus =
 
 **Status**: COMPLETE
 **Completed**: 2026-01-20
-**Commit**: (pending)
+**Commit**: 54d6226
 **QA Results**: typecheck OK, lint OK
 
 **Acceptance criteria covered**:
@@ -446,18 +446,18 @@ type DeviceStatus =
 
 **Goal**: App displays list of videos from phone that user can select
 
-**Status**: PENDING
-**Completed**: —
-**Commit**: —
-**QA Results**: —
+**Status**: COMPLETE
+**Completed**: 2026-01-20
+**Commit**: (pending)
+**QA Results**: typecheck OK, lint OK
 
 **Acceptance criteria covered**:
-- [ ] App lists video files from the phone's DCIM/Camera directory
-- [ ] Each video shows: filename, file size (human-readable), date modified
-- [ ] User can select multiple videos for transfer (checkboxes)
-- [ ] User can select/deselect all videos
-- [ ] List refreshes when user clicks a refresh button
-- [ ] Empty state shows clear message when no videos are found
+- [x] App lists video files from the phone's DCIM/Camera directory
+- [x] Each video shows: filename, file size (human-readable), date modified
+- [x] User can select multiple videos for transfer (checkboxes)
+- [x] User can select/deselect all videos
+- [x] List refreshes when user clicks a refresh button
+- [x] Empty state shows clear message when no videos are found
 
 **Implementation notes**:
 - Add to `src/main/adb.ts`:
