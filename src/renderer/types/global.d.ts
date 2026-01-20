@@ -1,4 +1,10 @@
-import type { DeviceStatus, MirrorStatus, VideoFile, DestinationInfo } from '../../shared/types';
+import type { DeviceStatus, MirrorStatus, VideoFile, DestinationInfo, TransferProgress, LargeFileWarning } from '../../shared/types';
+
+interface TransferStartResult {
+  needsWarning: boolean;
+  largeFiles?: LargeFileWarning;
+  started?: boolean;
+}
 
 interface VideoFluxAPI {
   getDeviceStatus: () => Promise<DeviceStatus>;
@@ -10,6 +16,10 @@ interface VideoFluxAPI {
   listVideos: () => Promise<VideoFile[]>;
   selectDestination: () => Promise<DestinationInfo | null>;
   getDestination: () => Promise<DestinationInfo | null>;
+  startTransfer: (files: string[], destPath: string, filesystemType: string) => Promise<TransferStartResult>;
+  confirmTransfer: () => Promise<boolean>;
+  cancelTransfer: () => Promise<void>;
+  onTransferProgress: (callback: (progress: TransferProgress) => void) => () => void;
 }
 
 declare global {

@@ -3,7 +3,14 @@ import DeviceStatus from './components/DeviceStatus';
 import MirrorControl from './components/MirrorControl';
 import VideoList from './components/VideoList';
 import DestinationPicker from './components/DestinationPicker';
-import type { DeviceStatus as DeviceStatusType, DestinationInfo } from '../shared/types';
+import TransferProgress from './components/TransferProgress';
+import LargeFileWarning from './components/LargeFileWarning';
+import type {
+  DeviceStatus as DeviceStatusType,
+  DestinationInfo,
+  TransferProgress as TransferProgressType,
+  LargeFileWarning as LargeFileWarningType,
+} from '../shared/types';
 
 const containerStyle: React.CSSProperties = {
   display: 'flex',
@@ -27,11 +34,17 @@ export default function App() {
   const [deviceStatus, setDeviceStatus] = useState<DeviceStatusType | null>(null);
   const [selectedVideoPaths, setSelectedVideoPaths] = useState<string[]>([]);
   const [destinationInfo, setDestinationInfo] = useState<DestinationInfo | null>(null);
+  const [transferProgress, setTransferProgress] = useState<TransferProgressType>({ status: 'idle' });
+  const [largeFileWarning, setLargeFileWarning] = useState<LargeFileWarningType | null>(null);
 
   useEffect(() => {
     window.videoFlux.getDeviceStatus().then(setDeviceStatus);
-
     const unsubscribe = window.videoFlux.onDeviceStatusChange(setDeviceStatus);
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = window.videoFlux.onTransferProgress(setTransferProgress);
     return unsubscribe;
   }, []);
 
@@ -43,8 +56,42 @@ export default function App() {
     setDestinationInfo(info);
   }, []);
 
-  console.log('Selected videos:', selectedVideoPaths.length);
-  console.log('Destination:', destinationInfo?.path);
+  const canStartTransfer =
+    selectedVideoPaths.length > 0 &&
+    destinationInfo !== null &&
+    transferProgress.status === 'idle';
+
+  const handleStartTransfer = useCallback(async () => {
+    if (!canStartTransfer || !destinationInfo) return;
+
+    const result = await window.videoFlux.startTransfer(
+      selectedVideoPaths,
+      destinationInfo.path,
+      destinationInfo.filesystem.type
+    );
+
+    if (result.needsWarning && result.largeFiles) {
+      setLargeFileWarning(result.largeFiles);
+    }
+  }, [canStartTransfer, selectedVideoPaths, destinationInfo]);
+
+  const handleConfirmTransfer = useCallback(async () => {
+    setLargeFileWarning(null);
+    await window.videoFlux.confirmTransfer();
+  }, []);
+
+  const handleCancelWarning = useCallback(() => {
+    setLargeFileWarning(null);
+    window.videoFlux.cancelTransfer();
+  }, []);
+
+  const handleCancelTransfer = useCallback(() => {
+    window.videoFlux.cancelTransfer();
+  }, []);
+
+  const handleDismissTransfer = useCallback(() => {
+    setTransferProgress({ status: 'idle' });
+  }, []);
 
   return (
     <div style={containerStyle}>
@@ -53,6 +100,20 @@ export default function App() {
       <MirrorControl deviceStatus={deviceStatus} />
       <VideoList deviceStatus={deviceStatus} onSelectionChange={handleSelectionChange} />
       <DestinationPicker destinationInfo={destinationInfo} onDestinationChange={handleDestinationChange} />
+      <TransferProgress
+        progress={transferProgress}
+        onCancel={handleCancelTransfer}
+        onDismiss={handleDismissTransfer}
+        onStartTransfer={handleStartTransfer}
+        canStartTransfer={canStartTransfer}
+      />
+      {largeFileWarning && (
+        <LargeFileWarning
+          warning={largeFileWarning}
+          onProceed={handleConfirmTransfer}
+          onCancel={handleCancelWarning}
+        />
+      )}
     </div>
   );
 }

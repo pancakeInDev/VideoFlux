@@ -1,8 +1,12 @@
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import { promisify } from 'util';
+import * as fs from 'fs';
+import * as path from 'path';
 import type { DeviceStatus, VideoFile } from '../shared/types.js';
 
 const execAsync = promisify(exec);
+const statAsync = promisify(fs.stat);
+const accessAsync = promisify(fs.access);
 
 const VIDEO_EXTENSIONS = ['.mp4', '.mkv', '.mov', '.3gp'];
 const DCIM_CAMERA_PATH = '/sdcard/DCIM/Camera';
@@ -124,4 +128,121 @@ export async function listVideos(): Promise<VideoFile[]> {
   } catch {
     return [];
   }
+}
+
+export async function getFileSize(sourcePath: string): Promise<number> {
+  try {
+    const { stdout } = await execAsync(`adb shell stat -c %s "${sourcePath}"`);
+    return parseInt(stdout.trim(), 10);
+  } catch {
+    return 0;
+  }
+}
+
+async function getUniquePath(basePath: string): Promise<string> {
+  const dir = path.dirname(basePath);
+  const ext = path.extname(basePath);
+  const nameWithoutExt = path.basename(basePath, ext);
+
+  let candidate = basePath;
+  let counter = 1;
+
+  for (;;) {
+    try {
+      await accessAsync(candidate, fs.constants.F_OK);
+      candidate = path.join(dir, `${nameWithoutExt} (${counter})${ext}`);
+      counter++;
+    } catch {
+      return candidate;
+    }
+  }
+}
+
+export interface TransferResult {
+  success: boolean;
+  destPath?: string;
+  error?: string;
+}
+
+export async function transferFile(
+  sourcePath: string,
+  destDir: string,
+  onProgress?: (percent: number) => void
+): Promise<TransferResult> {
+  const adbInstalled = await checkAdbInstalled();
+  if (!adbInstalled) {
+    return { success: false, error: 'ADB not installed' };
+  }
+
+  const filename = path.basename(sourcePath);
+  let destPath = path.join(destDir, filename);
+
+  try {
+    destPath = await getUniquePath(destPath);
+  } catch (err) {
+    return {
+      success: false,
+      error: `Permission denied: Cannot write to destination folder`,
+    };
+  }
+
+  const sourceSize = await getFileSize(sourcePath);
+  if (sourceSize === 0) {
+    return { success: false, error: 'Cannot read source file size' };
+  }
+
+  onProgress?.(0);
+
+  return new Promise((resolve) => {
+    const adbProcess = spawn('adb', ['pull', sourcePath, destPath]);
+    let errorOutput = '';
+
+    const progressInterval = setInterval(async () => {
+      try {
+        const stats = await statAsync(destPath);
+        const percent = Math.min(99, Math.floor((stats.size / sourceSize) * 100));
+        onProgress?.(percent);
+      } catch {
+        // File might not exist yet
+      }
+    }, 500);
+
+    adbProcess.stderr.on('data', (data: Buffer) => {
+      errorOutput += data.toString();
+    });
+
+    adbProcess.on('close', async (code) => {
+      clearInterval(progressInterval);
+
+      if (code === 0) {
+        onProgress?.(100);
+        resolve({ success: true, destPath });
+      } else {
+        try {
+          await accessAsync(destPath, fs.constants.F_OK);
+          fs.unlinkSync(destPath);
+        } catch {
+          // File doesn't exist, nothing to clean up
+        }
+
+        let errorMessage = 'Transfer failed';
+        if (errorOutput.includes('Permission denied')) {
+          errorMessage = 'Permission denied: Cannot write to destination folder';
+        } else if (errorOutput.includes('No space left')) {
+          errorMessage = 'Disk full: Not enough space on destination';
+        } else if (errorOutput.includes('does not exist')) {
+          errorMessage = 'Source file not found on device';
+        } else if (errorOutput.trim()) {
+          errorMessage = `Transfer failed: ${errorOutput.trim()}`;
+        }
+
+        resolve({ success: false, error: errorMessage });
+      }
+    });
+
+    adbProcess.on('error', (err) => {
+      clearInterval(progressInterval);
+      resolve({ success: false, error: `Transfer failed: ${err.message}` });
+    });
+  });
 }

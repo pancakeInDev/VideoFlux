@@ -30,3 +30,19 @@ export interface DestinationInfo {
   path: string;
   filesystem: FilesystemInfo;
 }
+
+export interface TransferProgress {
+  status: 'idle' | 'checking' | 'transferring' | 'complete' | 'cancelled' | 'error';
+  currentFile?: string;
+  currentFileIndex?: number;
+  totalFiles?: number;
+  fileProgress?: number;
+  completedFiles?: string[];
+  failedFiles?: Array<{ path: string; error: string }>;
+  errorMessage?: string;
+}
+
+export interface LargeFileWarning {
+  files: Array<{ path: string; filename: string; size: number; sizeHuman: string }>;
+  filesystemType: string;
+}
