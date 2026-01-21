@@ -2,8 +2,7 @@
 
 > Mirror your Android phone screen and transfer videos to your Mac
 
-<!-- TODO: Add screenshot banner when app is running with device connected -->
-<!-- ![VideoFlux Screenshot](docs/screenshots/main.png) -->
+![VideoFlux Screenshot](docs/screenshots/primary.png)
 
 ## Features
 
@@ -29,22 +28,16 @@ VideoFlux requires ADB and scrcpy to be installed. Install them via Homebrew:
 brew install android-platform-tools scrcpy
 ```
 
-### Download
-
-1. Download the latest DMG from [Releases](../../releases)
-2. Open the DMG and drag VideoFlux to your Applications folder
-3. **First launch**: Right-click the app > Open (the app is unsigned)
-
 ### Build from Source
 
 ```bash
-git clone https://github.com/yourusername/VideoFlux.git
+git clone https://github.com/pancakeInDev/VideoFlux.git
 cd VideoFlux
 npm install
 npm run build
 ```
 
-The built app will be in the `dist/` folder.
+The built app will be in the `release/` folder.
 
 ## Usage
 
@@ -61,14 +54,9 @@ The built app will be in the `dist/` folder.
 
 4. **Launch VideoFlux** - your device should be detected automatically
 
-<!-- TODO: Add usage screenshots -->
-<!--
-### Screen Mirroring
-![Mirroring](docs/screenshots/mirroring.png)
-
 ### Video Transfer
-![Transfer](docs/screenshots/transfer.png)
--->
+
+![Transfer](docs/screenshots/secondary.png)
 
 ## Architecture
 
@@ -156,15 +144,6 @@ npm run build
 - ESLint for code linting
 - Tailwind CSS for styling (no inline styles)
 - Conventional commits recommended
-
-## Code Signing
-
-This app is currently **unsigned**. On first launch:
-1. Right-click the app
-2. Select "Open"
-3. Click "Open" in the dialog
-
-macOS will remember this choice for future launches.
 
 ## License
 
